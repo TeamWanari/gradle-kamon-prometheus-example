@@ -1,0 +1,13 @@
+group "com.wanari"
+version "1.0-SNAPSHOT"
+
+apply plugin: "application"
+apply plugin: "java"
+
+mainClassName = "Main"
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
