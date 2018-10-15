@@ -11,3 +11,9 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
+
+dependencies {
+    compile(
+            "com.typesafe.akka:akka-actor_2.12:2.5.17",
+    )
+}
