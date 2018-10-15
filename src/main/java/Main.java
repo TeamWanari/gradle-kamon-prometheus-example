@@ -2,6 +2,8 @@ import actor.PingActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+import kamon.Kamon;
+import kamon.prometheus.PrometheusReporter;
 import message.Tick;
 
 import java.time.Duration;
@@ -16,9 +18,18 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("I'm running");
+        initializeKamon();
         initializeActors();
         schedulePing();
         System.out.println("=======================");
+    }
+
+    private static void initializeKamon() {
+        System.out.println("Initializing Kamon...");
+
+        Kamon.addReporter(new PrometheusReporter());
+
+        System.out.println("Done!");
     }
 
     private static void initializeActors() {
