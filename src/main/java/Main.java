@@ -1,4 +1,5 @@
 import actor.PingActor;
+import actor.PongActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
@@ -15,12 +16,15 @@ public class Main {
 
     private static ActorSystem system;
     private static ActorRef pingActor;
+    private static ActorRef pongActor;
 
     public static void main(String[] args) {
         System.out.println("I'm running");
         initializeKamon();
         initializeActors();
         schedulePing();
+        sendUnhandledMessages();
+        sendDeadLetters();
         System.out.println("=======================");
     }
 
@@ -37,6 +41,7 @@ public class Main {
 
         system = ActorSystem.create("my-actor-system");
         pingActor = system.actorOf(Props.create(PingActor.class));
+        pongActor = system.actorOf(Props.create(PongActor.class));
 
         System.out.println("Done!");
     }
@@ -47,5 +52,16 @@ public class Main {
         system.scheduler().schedule(initialDelay, interval, pingActor, new Tick(), system.dispatcher(), ActorRef.noSender());
 
         System.out.println("Done!");
+    }
+
+    private static void sendUnhandledMessages() {
+        pingActor.tell("Unhandled message to PingActor", ActorRef.noSender());
+        pongActor.tell("Unhandled message to PongActor", ActorRef.noSender());
+    }
+
+    private static void sendDeadLetters() {
+        ActorRef nonExistingActor = system.actorFor("non-existing-actor");
+
+        nonExistingActor.tell("Dead letter to non existing actor", ActorRef.noSender());
     }
 }
